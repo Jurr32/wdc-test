@@ -26,9 +26,9 @@
 //Helper function - I don't see why it's called this
 //This is where function build URL should go
 	function buildURL(article, startdate, enddate) {
-		 var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/'+ article + '/daily/' + startdate +'/' + enddate;
+	var url = https://tools.wmflabs.org/topviews/?project=et.wikipedia.org&platform=all-access&date=yesterday&excludes=
 		return url;
-	buildURL(article, startdate, enddate)
+	buildURL()
 	}
 //Connector definition
 	var myConnector = tableau.makeConnector();
@@ -39,8 +39,8 @@
  };
   
 	myConnector.getColumnHeaders = function() {
-		var fieldNames = ['views','article','agent','Date','id'];
-		var fieldTypes = [ 'float','string','string','string','int']; 
+		var fieldNames = ['Rank','Page','Edits','Editors','Pageviews','% Mobile'];
+		var fieldTypes = [ 'int','string','int','int','int','float']; 
 		tableau.headersCallback(fieldNames, fieldTypes); // tell tableau about the fields and their types
 	}
 	
@@ -49,17 +49,11 @@
 		var hasMoreData = false; 
 		
 		
-		var connectionData = JSON.parse(tableau.connectionData);
-		startdate = encodeURIComponent(connectionData.startdate);
-		enddate = encodeURIComponent(connectionData.enddate);
-		article = encodeURIComponent(connectionData.article);		
+		var connectionData = JSON.parse(tableau.connectionData);	
 			
-		var connectionUri = buildURL(article, startdate, enddate);
+		var connectionUri = buildURL();
 		tableau.log(dataToReturn);
 		tableau.log(connectionUri);
-				tableau.log(startdate);
-			tableau.log(enddate);
-					tableau.log(article);
 	
 	  var xhr = $.ajax({
                                          url: connectionUri,
@@ -72,26 +66,12 @@
                                                                              var ii;
                                                                              for (ii = 0; ii < name.length; ++ii) {
                                                                            var entry = {          
-																										
-																										'id': ii,
-																										'Date': name[ii].timestamp.slice(4,6)+"/"+name[ii].timestamp.slice(6,8)+"/"+name[ii].timestamp.slice(0,4),
-																									
-                                                                                                         'views': name[ii].views,
-																										 'agent': name[ii].agent,
-																										 'article': name[ii].article
-                                                                                                         };
-																										 
-																										/*"dataSrc": function (json) {
-																										for (ii = 0; ii < name.length; ++ii) {
-																										name[ii].timestamp = "1"+name[ii].timestamp;
-																										};*/
-																							
-																										 
-                                                                                            dataToReturn.push(entry);
-																							tableau.log(entry);
+																			 
+                                                                     dataToReturn.push(entry);
+								tableau.log(entry);
                                                                                                                   }
-																												  tableau.log(dataToReturn);
-                                                                             tableau.dataCallback(dataToReturn, lastRecordToken, false);
+												tableau.log(dataToReturn);
+                                                          tableau.dataCallback(dataToReturn, lastRecordToken, false);
                                                                            }
                                                                            
                                                }
@@ -103,12 +83,9 @@
  
 	$(document).ready(function() {
 		$("#submitButton").click(function() { 
-		 var article = $('#article').val().trim();
-		 var startdate = $('#startdate').val().trim();
-		 var enddate = $('#enddate').val().trim();
 		if (article) {
-			tableau.connectionName = "Wiki Search for " + article;
-			tableau.connectionData = JSON.stringify({'article': article, 'startdate': startdate, 'enddate': enddate})
+			tableau.connectionName = "Wiki Search for ";
+			tableau.connectionData = 
 			tableau.submit(); 
 			}
 		});
@@ -121,16 +98,6 @@
 	<center><b>API Connector</center></b>
 	<center><b></center></b>
 	<br>
-	<form>
-			<div class="form-group">
-				<input class="form-control" align="center" type="text" id="article" placeholder="article_name"/>
-			</div>
-			<div class="form-group">
-				<input class="form-control" align="center" type="text" id="startdate" placeholder="YYYYMMDD"/>
-			</div>
-			<div class="form-group">
-				<input class="form-control" align="center" type="text" id="enddate" placeholder="YYYYMMDD"/>
-			</div>
 		</form>
 		<div style="text-align:center"">
 	<button type="button"  id="submitButton">Submit</button>
