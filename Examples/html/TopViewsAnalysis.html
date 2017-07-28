@@ -1,106 +1,25 @@
 <html>
-<meta http-equiv="Cache-Control" content="no-store" />
-<head>
-<title>Wikipedia Pageview API</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
-<script src="https://public.tableau.com/javascripts/api/tableauwdc-1.1.0.js" type="text/javascript"></script>
- <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<img src="css/wikipedia_logo_detail.gif" alt="wikilogo" align="middle" height="150" width="150">
 
-	<style>
-	img {
-  
-	display: block;
-    margin-left: auto;
-    margin-right: auto
-   
-   
-}
-</style>
-<script type="text/javascript">
-( function() {
-//Helper function - I don't see why it's called this
-//This is where function build URL should go
-	function buildURL(article, startdate, enddate) {
-	var url = https://tools.wmflabs.org/topviews/?project=et.wikipedia.org&platform=all-access&date=yesterday&excludes=
-		return url;
-	buildURL()
-	}
-//Connector definition
-	var myConnector = tableau.makeConnector();
- 
- myConnector.init = function() {
-  tableau.incrementalExtractColumn = 'id';
-    tableau.initCallback();
- };
-  
-	myConnector.getColumnHeaders = function() {
-		var fieldNames = ['Rank','Page','Edits','Editors','Pageviews','% Mobile'];
-		var fieldTypes = [ 'int','string','int','int','int','float']; 
-		tableau.headersCallback(fieldNames, fieldTypes); // tell tableau about the fields and their types
-	}
-	
-	myConnector.getTableData = function(lastRecordToken) {
-	 var dataToReturn = [];
-		var hasMoreData = false; 
-		
-		
-		var connectionData = JSON.parse(tableau.connectionData);	
-			
-		var connectionUri = buildURL();
-		tableau.log(dataToReturn);
-		tableau.log(connectionUri);
-	
-	  var xhr = $.ajax({
-                                         url: connectionUri,
-                                               type: 'get',
-                                               dataType: 'json',
-                                               success: function jsoncallback(json) {
-                                                              if (json.items) {
-														
-                                                                             var name = json.items;
-                                                                             var ii;
-                                                                             for (ii = 0; ii < name.length; ++ii) {
-                                                                           var entry = {          
-																			 
-                                                                     dataToReturn.push(entry);
-								tableau.log(entry);
-                                                                                                                  }
-												tableau.log(dataToReturn);
-                                                          tableau.dataCallback(dataToReturn, lastRecordToken, false);
-                                                                           }
-                                                                           
-                                               }
-                                             });
-	}
-	//tableau.log(myConnector.getTableData);
-	tableau.registerConnector(myConnector);
-})();
- 
-	$(document).ready(function() {
-		$("#submitButton").click(function() { 
-		if (article) {
-			tableau.connectionName = "Wiki Search for ";
-			tableau.connectionData = 
-			tableau.submit(); 
-			}
-		});
-		
-	});
-	
-</script>
+<head>
+    <title>Topviews Feed</title>
+    <meta http-equiv="Cache-Control" content="no-store" />
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://connectors.tableau.com/libs/tableauwdc-2.2.latest.js" type="text/javascript"></script>
+    <script src="TopviewsAnalysis.js" type="text/javascript"></script>
 </head>
+
 <body>
-	<center><b>API Connector</center></b>
-	<center><b></center></b>
-	<br>
-		</form>
-		<div style="text-align:center"">
-	<button type="button"  id="submitButton">Submit</button>
-	</div>
+    <div class="container container-table">
+        <div class="row vertical-center-row">
+            <div class="text-center col-md-4 col-md-offset-4">
+                <button type="button" id="submitButton" class="btn btn-success" style="margin: 10px;">Get Topviews Data!</button>
+            </div>
+        </div>
+    </div>
 </body>
-	</html>
+
+</html>
