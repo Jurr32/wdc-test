@@ -29,15 +29,15 @@
     // Download the data
     myConnector.getData = function(table, doneCallback) {
         $.getJSON("https://wikimedia.org/api/rest_v1/metrics/pageviews/top/et.wikipedia/all-access/2017/07/27", function(resp) {
-            var feat = resp.features,
+            var feat = resp.items.articles,
                 tableData = [];
 
             // Iterate over the JSON object
             for (var i = 0, len = feat.length; i < len; i++) {
                 tableData.push({
-                    "rank": feat[i].articles.rank,
-                    "article": feat[i].articles.article,
-                    "views": feat[i].articles.views
+                    "rank": feat[i].rank,
+                    "article": feat[i].article,
+                    "views": feat[i].views
                 });
             }
 
